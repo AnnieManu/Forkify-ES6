@@ -71,7 +71,7 @@ const renderButton = (page, numResults, resPerPage) =>{
     }
     elements.searchResPages.insertAdjacentHTML('afterbegin', button);
 };
-    export const renderRsults = (recipes, page = 1, resPerPage = 10) => {  
+    export const renderResults = (recipes, page = 1, resPerPage = 10) => {  
         //render results of current page
     const start = (page - 1) * resPerPage;
     const end = Math.ceil(page * resPerPage);

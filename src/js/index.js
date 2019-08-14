@@ -14,6 +14,7 @@ const state = {};
 const controlSearch = async() => {
     //1. get the query from the view
     const query = searchView.getInput(); 
+
     console.log(query);//toDo
     if (query){
         //2.new search object and add it to state
@@ -33,8 +34,8 @@ const controlSearch = async() => {
        clearLoader();
        searchView.renderResults(state.search.result)
        } catch(err){
-           console.log(err);
-          alert('something wrong with the search');
+           //console.log(err.message);
+          //alert('something wrong with the search');
           clearLoader();
        }        
     }
@@ -44,13 +45,13 @@ elements.searchForm.addEventListener('submit', e => {
 e.preventDefault();
 controlSearch();
 });
-
+ 
 elements.searchResPages.addEventListener('click', e=>{
     const btn = e.target.closest('.btn-inline');
     if(btn){
         const goToPage = parseInt(btn.dataset.goto, 10);
         searchView.clearResults();
-        searchView.renderRsults(state.search.result, goToPage);
+        searchView.renderResults(state.search.result, goToPage);
     }
 });
 
@@ -68,18 +69,17 @@ const controlRecipe = async () => {
 
         //Create a new recipe object
         state.recipe = new Recipe(id); 
-    
         try{
-             //Get the recipe data
+             //Get the recipe data and ingredients
             await state.recipe.getRecipe();
-
+            state.recipe.parseIngredients();
             //Calculate servings & time
             state.recipe.calcTime();
             state.recipe.calcServings();
             //Render the recipe
             console.log(state.recipe);
         } catch(err){
-            console.log(err.message);
+            //console.log(err);
             alert('Error processing recipe');
         }    
     }

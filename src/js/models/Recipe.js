@@ -17,8 +17,8 @@ export default class Recipe {
 
         } 
         catch(error){
-          //console.log(error.message);
-          alert('something went wrong :((((');
+          console.log(error.message);
+          //alert('something went wrong :((((');
           
          }
     }
@@ -36,20 +36,22 @@ export default class Recipe {
     parseIngredients(){
       const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
       const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
-      const newIngredients = this.ingredient.map( el => {
+      const units = [...unitsShort, 'kg', 'g']
+      const newIngredients = this.ingredients.map(el => {
        //1.uniform units
-      let ingredient = el.toLowerCase();
-      unitsLong.forEach((unit, i) =>{
-       ingredient = ingredient.replace(unit, unitsShort[i]);
-      });
+       let ingredient = el.toLowerCase();
+       unitsLong.forEach((unit, i) => {
+        ingredient = ingredient.replace(unit, unitsShort[i]);
+    });
        
        //2. remove parenthenses
-         ingredient = ingredient.replace(/ *\([^)]*\) */g, ' ');
+       ingredient = ingredient.replace(/ *\([^)]*\) */g, ' ');
        //3. parse ingrediants into count, uniit & ingredients 
-        const arrIng = ingredient.split(' ');
-        const unitIndex = arrIng.findIndex(el2 => unitsShort.includes(el2));
+       const arrIng = ingredient.split(' ');
+       const unitIndex = arrIng.findIndex(el2 => units.includes(el2));
+
         let objIng;
-        if(initIndex > -1){
+        if(unitIndex > -1){
           //there is a unit
           //ex: 4 1/2 cup, arr count is [4, 1/2];
           const arrCount = arrIng.slice(0, unitIndex);
@@ -62,7 +64,8 @@ export default class Recipe {
            objIng = {
              count,
              unit: arrIng[unitIndex],
-             ingredient
+             //ingredient
+             ingredient: arrIng.slice(unitIndex + 1).join(' ')
            }
 
         } else if(parseInt(arrIng[0], 10)){
@@ -79,7 +82,7 @@ export default class Recipe {
           objIng ={
             count: 1,
             unit: '',
-            ingredient: arrIng.slice(unitIndex + 1).join('')
+            ingredient
           }
         }
 

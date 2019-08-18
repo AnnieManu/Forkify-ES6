@@ -2,6 +2,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as searchView from './view/searchView';
+import * as recipeView from './view/recipeView';
 import { elements, renderLoader, clearLoader} from './view/base';
 /*Global State of the app
 -Search object
@@ -15,15 +16,15 @@ const controlSearch = async() => {
     //1. get the query from the view
     const query = searchView.getInput(); 
 
-    console.log(query);//toDo
+    //console.log(query);//toDo
     if (query){
         //2.new search object and add it to state
         state.search = new Search(query);
    
        //3.prepare UI for the results
-       searchView.clearInput();
-       searchView.clearResults();
-       renderLoader(elements.searchRes);
+        searchView.clearInput();
+        searchView.clearResults();
+        renderLoader(elements.searchRes);
 
        try{
         //4.search for recipes
@@ -32,9 +33,9 @@ const controlSearch = async() => {
        //5.render results on UI
        //console.log(state.search.result);
        clearLoader();
-       searchView.renderResults(state.search.result)
+       searchView.renderResults(state.search.result);
        } catch(err){
-           //console.log(err.message);
+           console.log(err.message);
           //alert('something wrong with the search');
           clearLoader();
        }        
@@ -46,9 +47,9 @@ e.preventDefault();
 controlSearch();
 });
  
-elements.searchResPages.addEventListener('click', e=>{
+elements.searchResPages.addEventListener('click', e => {
     const btn = e.target.closest('.btn-inline');
-    if(btn){
+    if (btn) {
         const goToPage = parseInt(btn.dataset.goto, 10);
         searchView.clearResults();
         searchView.renderResults(state.search.result, goToPage);
@@ -63,7 +64,8 @@ const controlRecipe = async () => {
  console.log('id');
     if(id){
         //Prepare UI for changes
-
+         recipeView.clearRecipe();
+         renderLoader(elements.recipe);
         //Get the id from the URL
     
 
@@ -72,15 +74,17 @@ const controlRecipe = async () => {
         try{
              //Get the recipe data and ingredients
             await state.recipe.getRecipe();
+            //console.log(state.recipe.ingredient);
             state.recipe.parseIngredients();
             //Calculate servings & time
             state.recipe.calcTime();
             state.recipe.calcServings();
             //Render the recipe
-            console.log(state.recipe);
+            clearLoader();
+            recipeView.renderRecipe(state.recipe);
         } catch(err){
-            //console.log(err);
-            alert('Error processing recipe');
+            console.log(err.message);
+            //alert('Error processing recipe');
         }    
     }
 };

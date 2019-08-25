@@ -1,6 +1,7 @@
 
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import List from './models/List';   
 import * as searchView from './view/searchView';
 import * as recipeView from './view/recipeView';
 import { elements, renderLoader, clearLoader} from './view/base';
@@ -68,7 +69,8 @@ const controlRecipe = async () => {
          renderLoader(elements.recipe);
         //Get the id from the URL
     
-
+         //Highlight te selected seatch item
+        if(state.search) searchView.highlightSelected(id);
         //Create a new recipe object
         state.recipe = new Recipe(id); 
         try{
@@ -91,5 +93,22 @@ const controlRecipe = async () => {
 
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
+//Handling recipe button clicks
+elements.recipe.addEventListener('click', e=>{
+ if(e.target.matches('.btn-decrease, .btn-decrease *')){
+     if(state.recipe.servings > 1) {    
+        //decrease button is clicked
+    state.recipe.updateServings('dec'); 
+    recipeView.updateServingsIngredients(state.recipe);  
+     }
+  
+ } else if(e.target.matches('.btn-increase, .btn-increase *')){
+   //increase button is clicked   
+   state.recipe.updateServings('inc');
+   recipeView.updateServingsIngredients(state.recipe);
+ }
+ //console.log(state.recipe);
+});
+ window.l = new List();
 
  
